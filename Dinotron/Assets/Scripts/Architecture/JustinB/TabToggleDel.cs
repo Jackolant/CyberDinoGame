@@ -14,7 +14,6 @@ public class TabToggleDel : MonoBehaviour {
 			if (OnPress != null) {
 				OnPress (openTablet);
 			}
-			Debug.Log ("Event Siganal Sent");
 		}
 	}
 	void Update()

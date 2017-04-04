@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic; //allows use of generic lists
 
 public class SelectManager : MonoBehaviour {
-    public List<DinoManager> listDinoManagers;
+	public List<GetDinoInfo> listDinoManagers;
     private int count;
 	
     // Use this for initialization

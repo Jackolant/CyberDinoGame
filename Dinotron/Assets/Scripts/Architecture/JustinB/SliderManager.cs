@@ -7,38 +7,37 @@ public class SliderManager : MonoBehaviour {
 	public Slider mySlider; //allows a slider to be affected by this script
 	private enum statCode{Health,Heat,Speed,Damage,ROF}; //creates an enum type that holds the different stats that can be listened for.
 	[SerializeField]
-	private DinoManager.playerNumber playerCode; //Dictates which player this slider is listening for.
-	[SerializeField]
 	private statCode stat; //the stat that this script is listening for
 
+	public GameObject signalSource;
+	private GetDinoInfo delegateSource;
 	//subscribes to a certain event from the DinoClass based on what stat the slider is listening for.
 	void Start(){
+		delegateSource = signalSource.GetComponent<GetDinoInfo> ();
 		if (stat == statCode.Health) {
-			DinoManager.sendHealth += changeStat;
+			delegateSource.sendHealth += ChangeStat;
+			mySlider.value = delegateSource.dinoStatistics [0].MaxHealth;
 		}
 		if (stat == statCode.Heat) {
-			DinoManager.sendHeat += changeStat;
+			delegateSource.sendHeat += ChangeStat;
+			mySlider.value = delegateSource.dinoStatistics [0].MaxHeat;
 		}
 		if (stat == statCode.Speed) {
-			DinoManager.sendSpeed += changeStat;
+			delegateSource.sendSpeed += ChangeStat;
+			mySlider.value = delegateSource.dinoStatistics [0].speed;
 		}
 		if (stat == statCode.Damage) {
-			DinoManager.sendDamage += changeStat;
+			delegateSource.sendDamage += ChangeStat;
+			mySlider.value = delegateSource.dinoWeapons [0].damage;
 		}
 		if (stat == statCode.ROF) {
-			DinoManager.sendROF += changeStat;
+			delegateSource.sendROF += ChangeStat;
+			mySlider.value = delegateSource.dinoWeapons [0].fireDelay;
 		}
+
 	}
-	public void changeStat(int value,DinoManager.playerNumber player) //overloaded method that changes the stat for the slider if the stat it's listening for is an int
+	public void ChangeStat(float value) //overloaded method that changes the stat for the slider if the stat it's listening for is an int
 	{																  //PlayerNumber is a enum type from DinoManager
-		if (player == playerCode) { //if the player that sent the code matches the one this slider is listening for, change the value of the slider.
 			mySlider.value = value;
-		}
-	}
-	public void changeStat(float value,DinoManager.playerNumber player) //overloaded method that changes the stat for the slider if the stat it's listening for is an int
-	{																	
-		if (player == playerCode) {
-			mySlider.value = value;
-		}
 	}
 }
