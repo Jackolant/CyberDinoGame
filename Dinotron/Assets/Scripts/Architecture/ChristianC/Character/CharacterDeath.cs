@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(DinoCharacter))]
-public class DinoDeath : MonoBehaviour {
+[RequireComponent(typeof(GameCharacter))]
+public class CharacterDeath : MonoBehaviour {
 
-    private DinoCharacter dino;
+    private GameCharacter gameCharacter;
     public GameObject explosionPrefab;
 
 	// Use this for initialization
 	void OnEnable () {
-        dino = GetComponent<DinoCharacter>();
-        dino.Death += IDied;
+        gameCharacter = GetComponent<GameCharacter>();
+        gameCharacter.Death += IDied;
     }
 	
 	void OnDisable() {
-        dino.Death -= IDied;
+        gameCharacter.Death -= IDied;
     }
 
     void IDied() {

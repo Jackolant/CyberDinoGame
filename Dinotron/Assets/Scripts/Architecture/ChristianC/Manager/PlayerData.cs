@@ -8,12 +8,12 @@ public class PlayerData : MonoBehaviour {
     public float deathTime = 0;
 
     public GameObject dinoObject;
-    public DinoCharacter dinoCharacter;
+    public GameCharacter dinoCharacter;
     public PlayerControl playerControl;
 
     public GameObject cameraObject;
     public Camera playerCamera;
-    public PlayerDinoCamera dinoCamera;
+    public PlayerOrbitCamera dinoCamera;
 
     public GameObject hudUIObject;
     public DinoUI dinoUI;

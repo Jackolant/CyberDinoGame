@@ -2,7 +2,7 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
-public class RigidbodyCharacterMotor : DinoCharacterMotor {
+public class RigidbodyMotor : CharacterMotor {
 
     //Floating point math introduces a lot of errors. Adjust the goal/value by a small
     //amount when measuring floating point values to make up for that error.
@@ -13,29 +13,15 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
     /////////////////////////
 
     #region Inspector Variables
-    [Header("Movement Settings")]
-    [Tooltip("Can the character automatically rotate to match their input direction?")]
-    public bool enableAutoRotation = true;
-    [Tooltip("How fast the character rotates to face the direction they're moving in. Degrees per second.")]
-    public float autoRotationSpeed = 360f;
+    [Header("[RigidbodyMotor] Movement Settings")]
+
     [Tooltip("How long it takes to get up to Max Speed. Minimum value is Time.fixedDeltaTime * 2 (two frames). Is effected by how fast the move input itself gets to 100%.")]
-    public float accelerationTime = 0.5f;
+    public float accelerationTime = 0.1f;
     [Tooltip("How long it takes to stop after going at Max Speed. Minimum value is Time.fixedDeltaTime * 2 (two frames).")]
-    public float deccelerationTime = 0.25f;
-    [Tooltip("How much control the player has over their air movement. Effects how fast they can accelerate and stop in the air. Value is clamped from 0% to 100%.")]
-    public float airControlPercentage = 0.1f;
-    [Tooltip("The top speed a character can get while sliding down a steep slope.")]
-    public float maxSlideSpeed = 50f;
+    public float deccelerationTime = 0.1f;
 
-    [Header("Jumping/Gravity Settings")]
-    [Tooltip("How high the character can jump. Jumping velocity is calcuated from this value and from gravity.")]
-    public float jumpHeight = 15f;
-    [Tooltip("The force of gravity on the character. Meters per second")]
-    public float gravity = 10f;
-    [Tooltip("The top speed the character can fall at. Set this high, but not too high as this mainly serves as a way to stop the player from tunneling through the floor.")]
-    public float terminalVelocity = 60f;
 
-    [Header("Surface Collision Settings")]
+    [Header("[RigidbodyMotor] Surface Collision Settings")]
     [Tooltip("A surface with an incline below this number will be considered to be floor and the character will not slide on them. If the inclide is above this number then the player will slide down it.")]
     public float steepSlopeAngle = 60f;
     [Tooltip("A surface with an incline equal to or above this number will be considered to be a wall. Wall detection caps out at Ceiling Angle.")]
@@ -43,19 +29,11 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
     [Tooltip("A surface with an incline equal to or above this number will be considered to be a ceiling.")]
     public float ceilingAngle = 100f;
 
-    [Header("[TEMPORARY FUNCTIONALITY] Art Object Tilting Settings")]
-    [Tooltip("Is tilting the art object enabled?")]
-    public bool enableArtTilt = false;
-    [Tooltip("The transform of the GameObject that contains the art assets. Assumed to be parented to this object. Currently used for groundNormal tilt.")]
-    public Transform artObjectTransform;
-    [Tooltip("How fast the art transform tilts to match the ground angle in degrees/second. Set to 0 to disable.")]
-    public float artTiltSpeed = 180f;
-
     /// <summary>
     /// When the player leaves the ground (and not by jumping) how far can they snap downwards in
     /// one update in order to stay on the ground?
     /// </summary>
-    [Header("[ADVANCED] Ground Sticky Effect Settings")]
+    [Header("[RigidbodyMotor ADVANCED] Ground Sticky Effect Settings")]
     [Tooltip("(Essentially inverse Step Limit) When the character leaves the ground (and not by jumping) how far can they snap downwards in one update in order to stay on the ground?  Does not need to be to anything bigger than 1 in most cases unless your speed is 100 or something (in which case set it to at least 3). Minimum value is 0.")]
     public float groundStickyDistance = 2f;
 
@@ -68,7 +46,6 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
     #endregion
 
     //Variables used for caching.
-    Rigidbody rb;
     Collider col;
     Transform tr;
     Vector3 velocity = new Vector3();
@@ -77,28 +54,14 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
     // There are four cases as to what kind of surface we are colliding with.
     // We are either: touching valid ground, touching a steep slope, touching a wall, or touching a ceiling.
     // In the case that we are touching a steep slope, but not touching valid ground. groundNormal and groundNormalAngle will equal slopeNormal and slopeNormalAngle
-    Vector3 groundNormal;
-    float groundNormalAngle;
+
+
     bool isTouchingGround;
     /// <summary>
     /// Lags behind isGrounded by one update.
     /// Used for the edge cases of leaving the ground and landing on the ground.
     /// </summary>
     bool wasTouchingGround;
-
-    Vector3 slopeNormal;
-    float slopeNormalAngle;
-    bool isTouchingSteepSlope;
-    bool isStandingOnSteepSlope;
-
-    Vector3 wallNormal;
-    float wallNormalAngle;
-    bool isTouchingWall;
-
-    Vector3 ceilingNormal;
-    float ceilingNormalAngle;
-    bool isTouchingCeiling;
-
 
     //Moving platform tracking information.
     //Transform platform;
@@ -108,94 +71,23 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
     //Variables to track the collection of new physics info.
     float newGroundAngle;
 
-    //////////////////////////////
-    // Public Access Properties //
-    //////////////////////////////
-
-    // Should be everything you need in order to set up an Animator controller script.
-
-    #region Properties
     /// <summary>
     /// Is the character considered to be grounded?
     /// </summary>
-    public bool IsTouchingGround { get { return isTouchingGround || wasTouchingGround; } }
+    public override bool IsTouchingGround { get { return isTouchingGround || wasTouchingGround; } }
 
-    /// <summary>
-    /// The normal of the ground the character is standing on. Returns Vector3.zero if the character is not standing on any ground.
     /// </summary>
-    public Vector3 GroundNormal { get { return groundNormal; } }
-
-    /// <summary>
-    /// The angle of the normal of the ground the character is standing on. Returns -1 if the character is not standing on any ground.
-    /// </summary>
-    public float GroundNormalAngle { get { return (IsTouchingGround) ? groundNormalAngle : -1; } }
-
-    /// <summary>
-    /// Is the character standing on a steep slope? As in, is that the only ground that they're standing on?
-    /// </summary>
-    public bool IsStandingOnSteepSlope { get { return isStandingOnSteepSlope; } }
-
-    /// <summary>
-    /// Is the character in contact with a slope that is too steep? Does not mean that they are standing only on said slope. They could be standing on the ground AND touching the steep slope.
-    /// </summary>
-    public bool IsTouchingSteepSlope { get { return isTouchingSteepSlope; } }
-
-    /// <summary>
-    /// The normal of the steep slope the character is in contact with. Returns Vector3.zero if they are not in contact with any steep slopes.
-    /// </summary>
-    public Vector3 SteepSlopeNormal { get { return slopeNormal; } }
-
-    /// <summary>
-    /// The angle of the nomral of the steep slope the character is in contact with. Returns -1 if they are no tin contact with any steep slopes.
-    /// </summary>
-    public float SteepSlopeNormalAngle { get { return (IsTouchingSteepSlope) ? slopeNormalAngle : -1; } }
-    
-    /// <summary>
-    /// Is the character in contact with a wall?
-    /// </summary>
-    public bool IsTouchingWall { get { return isTouchingWall; } }
-
-    /// <summary>
-    /// The normal of the wall the character is in contact with. Returns Vector3.zero if the character is not in contact with any walls.
-    /// </summary>
-    public Vector3 WallNormal { get { return wallNormal; } }
-
-    /// <summary>
-    /// The angle of the normal of the wall the character is in contact with. Returns -1 if the character is not in contact with any walls.
-    /// </summary>
-    public float WallNormalAngle { get { return (IsTouchingWall) ? wallNormalAngle : -1; } }
-
-    /// <summary>
-    /// Is the character touching a ceiling? (They probably won't be for long though as gravity will pull them down.)
-    /// </summary>
-    public bool IsTouchingCeiling { get { return isTouchingCeiling; } }
-
-    /// <summary>
-    /// The normal of the ceiling that the character is in contact with. Returns Vector3.zero if the character is not in contact with any ceilings.
-    /// </summary>
-    public Vector3 CeilingNormal { get { return ceilingNormal; } }
-
-    /// <summary>
-    /// The angle of the ceiling that the character is in contact with. Returns -1 if the character is not in contact with any ceilings.
-    /// </summary>
-    public float CeilingNormalAngle { get { return (IsTouchingCeiling) ? ceilingNormalAngle : -1; } }
-
-    /// <summary>
-    /// Is the character airborne? That is, are they not touching the ground?
-    /// </summary>
-    public bool IsAirborne { get { return !IsTouchingGround; } }
+    public override bool IsAirborne { get { return !IsTouchingGround; } }
 
     /// <summary>
     /// How fast the character is moving in meters per second.
     /// </summary>
-    public Vector3 Velocity { get { return rb.velocity; } set { rb.velocity = velocity = value; } }
+    public override Vector3 Velocity { get { return Rigidbody.velocity; } set { Rigidbody.velocity = velocity = value; } }
 
     /// <summary>
     /// The rigidbody that this script is manipulating.
     /// </summary>
-    public Rigidbody Rigidbody { get { return rb; } }
-    #endregion
-
+    public virtual Rigidbody Rigidbody { get; protected set; }
 
     private bool started = false;
 
@@ -206,12 +98,12 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
             Debug.Break();
         }
 
-        rb = GetComponent<Rigidbody>();
+        Rigidbody = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
         tr = transform;
 
         //Shoot the rigidbody up with caffine (This rigidbody is never allowed to sleep.)
-        rb.sleepThreshold = -1;
+        Rigidbody.sleepThreshold = -1;
 
         //Make sure the groundStickyEffect isn't prematurely disabled.
         groundStickyDisabledUntilTime = -groundStickyDisableDuration;
@@ -220,14 +112,14 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
     }
 
     float CalculateJumpForce() {
-        return Mathf.Sqrt(2 * jumpHeight * gravity);
+        return Mathf.Sqrt(2 * gameCharacter.jumpHeight * gravity);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // Fixed Update. Adjust the velocity of the character and let the physics engine handle moving it. //
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public override void Move(float deltaTime) {
+    public override void Move(float fixedDeltaTime) {
         if (!started) {
             return;
         }
@@ -236,7 +128,7 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
         // Store the rigidbody's velocity in our own variable to allow for easier editting
         // as well as detecting how it differs from what our desired velocity was at the
         // end of the last update.
-        velocity = rb.velocity;
+        velocity = Rigidbody.velocity;
 
         //Lets keep random forces caused by floating point errors and tiny physics action
         //from building up.
@@ -245,7 +137,7 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
         }
 
         //Create a copy of the moveInput variable since it is possible that we will be editting it directly right in the next step.
-        Vector3 tempMoveInput = dino.moveInput;
+        Vector3 tempMoveInput = gameCharacter.moveInput;
         float inputMagnitude = tempMoveInput.magnitude;
 
         // Do not allow the character to walk up steep slopes and walls by clamping the input in that direction.
@@ -253,20 +145,20 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
 
         // First we test to see if we are touching a steep slope and then we test to see if our input is pointing into said slope.
         // The easiest way to do the latter test is to see if the input and the slope normal have a negative dot product.
-        if (IsTouchingSteepSlope && Vector3.Dot(tempMoveInput, slopeNormal) < 0) {
+        if (IsTouchingSteepSlope && Vector3.Dot(tempMoveInput, SteepSlopeNormal) < 0) {
             // Clamp the input vector to the surface of the slope by projecting onto the plane of a version of the slope normal that is completely horizontal.
-            tempMoveInput = Vector3.ProjectOnPlane(tempMoveInput, Vector3.ProjectOnPlane(slopeNormal, Vector3.up));
+            tempMoveInput = Vector3.ProjectOnPlane(tempMoveInput, Vector3.ProjectOnPlane(SteepSlopeNormal, Vector3.up));
         }
 
-        if (IsTouchingWall && Vector3.Dot(tempMoveInput, wallNormal) < 0) {
+        if (IsTouchingWall && Vector3.Dot(tempMoveInput, WallNormal) < 0) {
             //Debug.Log("Walking into wall!");
-            tempMoveInput = Vector3.ProjectOnPlane(tempMoveInput, Vector3.ProjectOnPlane(wallNormal, Vector3.up));
+            tempMoveInput = Vector3.ProjectOnPlane(tempMoveInput, Vector3.ProjectOnPlane(WallNormal, Vector3.up));
         }
 
         //This keeps the character from getting stuck when walking into the underside of a slope/ramp.
-        if (IsTouchingCeiling && Vector3.Dot(tempMoveInput, ceilingNormal) < 0) {
+        if (IsTouchingCeiling && Vector3.Dot(tempMoveInput, CeilingNormal) < 0) {
             //Debug.Log("Walking into ceiling!");
-            tempMoveInput = Vector3.ProjectOnPlane(tempMoveInput, Vector3.ProjectOnPlane(ceilingNormal, Vector3.up));
+            tempMoveInput = Vector3.ProjectOnPlane(tempMoveInput, Vector3.ProjectOnPlane(CeilingNormal, Vector3.up));
         }
 
 
@@ -281,11 +173,11 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
         //Get the speed we'll be using, it will be less if we're in the air.
         float effectiveSpeed;
         // Get the maxSpeed value we want to use.
-        float effectiveMaxSpeed = (dino.IsSprinting) ? dino.sprintSpeed : dino.speed;
+        float effectiveMaxSpeed = (gameCharacter.IsSprinting) ? gameCharacter.sprintSpeed : gameCharacter.speed;
 
         if (IsTouchingGround) {
-            slopedInputNormal = Vector3.Cross(Vector3.Cross(Vector3.up, tempMoveInput), groundNormal);
-            velocityProjectedOnSlope = Vector3.ProjectOnPlane(velocity, groundNormal);
+            slopedInputNormal = Vector3.Cross(Vector3.Cross(Vector3.up, tempMoveInput), GroundNormal);
+            velocityProjectedOnSlope = Vector3.ProjectOnPlane(velocity, GroundNormal);
             effectiveSpeed = effectiveMaxSpeed;
         } else {
             // We are airborne
@@ -305,8 +197,8 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
         // Acceleration and Decceleration along the ground slope //
         ///////////////////////////////////////////////////////////
 
-        float deccelSpeed = (effectiveSpeed / deccelerationTime) * deltaTime;
-        float accelSpeed = (effectiveSpeed / accelerationTime) * deltaTime;
+        float deccelSpeed = (effectiveSpeed / deccelerationTime) * fixedDeltaTime;
+        float accelSpeed = (effectiveSpeed / accelerationTime) * fixedDeltaTime;
         float desiredSpeed = effectiveMaxSpeed * inputMagnitude;
 
         // Decceleration
@@ -346,7 +238,7 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
 
         Vector3 accelerationChange = Vector3.zero;
         // Only apply acceleration if there's input.
-        if (dino.moveInput != Vector3.zero) {
+        if (gameCharacter.moveInput != Vector3.zero) {
 
             float force = accelSpeed;
             //Counteract the deccelleration force. Doing it here means that the counteracting is only in the direction we're moving.
@@ -375,28 +267,14 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
         //Apply acceleration change.
         velocity += accelerationChange;
 
-        ////////////////////
-        // Art tilt logic //
-        ////////////////////
-
-        if (enableArtTilt && IsTouchingGround) {
-            //Art rotation target
-            Quaternion artRotationTarget = Quaternion.identity;
-
-            artRotationTarget = Quaternion.FromToRotation(Vector3.up, tr.InverseTransformDirection(groundNormal));
-
-            //Rotate the art object's local rotation according to the ground tilt.
-            artObjectTransform.localRotation = Quaternion.RotateTowards(artObjectTransform.localRotation, artRotationTarget, artTiltSpeed * deltaTime);
-        }
-
         /////////////////////////
         // Jumping and Gravity //
         /////////////////////////
 
         //Jumping
-        if (dino.jumpInput) {
+        if (gameCharacter.jumpInput) {
             //Consume the jump input on the first fixed update it's read in.
-            dino.jumpInput = false;
+            gameCharacter.jumpInput = false;
 
             if (IsTouchingGround && !IsStandingOnSteepSlope) {
                 Vector3 jumpForce = Vector3.up;
@@ -412,10 +290,10 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
         if (IsTouchingGround) {
             if (!IsStandingOnSteepSlope) {
                 // If we're on the ground, apply gravity such that it sticks us to the slope.
-                velocity -= groundNormal * gravity * deltaTime;
+                velocity -= GroundNormal * gravity * fixedDeltaTime;
             } else {
                 // If we're on a steep slope, we want to slide down it!
-                velocity += Vector3.ProjectOnPlane(Vector3.down, slopeNormal) * ((gravity * deltaTime) + deccelSpeed);
+                velocity += Vector3.ProjectOnPlane(Vector3.down, SteepSlopeNormal) * ((gravity * fixedDeltaTime) + deccelSpeed);
 
                 // But lets not go downwards too fast! Though lets check if we're going downwards first.
                 if (Vector3.Dot(Vector3.down, velocity) > 0) {
@@ -425,7 +303,7 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
         } else {
 
             // Apply normal gravity;
-            velocity.y -= gravity * deltaTime;
+            velocity.y -= gravity * fixedDeltaTime;
 
             //Limit falling speed
             if (velocity.y < -terminalVelocity) {
@@ -442,14 +320,14 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
         Quaternion rotationTarget = Quaternion.identity;
         //Rotate the way we're moving towards! But only if we have some sideways input.
         //This would work much better if the camera wasn't parented directy to the player
-        if (enableAutoRotation && dino.moveInput.magnitude >= smallTolerance) {
-            rotationTarget = Quaternion.FromToRotation(Vector3.forward, dino.moveInput);
+        if (enableAutoRotation && gameCharacter.moveInput.magnitude >= smallTolerance) {
+            rotationTarget = Quaternion.FromToRotation(Vector3.forward, gameCharacter.moveInput);
             rotationTarget.eulerAngles = new Vector3(0, rotationTarget.eulerAngles.y, 0);
-            tr.rotation = Quaternion.RotateTowards(tr.rotation, rotationTarget, autoRotationSpeed * deltaTime);
+            tr.rotation = Quaternion.RotateTowards(tr.rotation, rotationTarget, autoRotationSpeed * fixedDeltaTime);
         }
 
         //Save velocity changes
-        rb.velocity = velocity;
+        Rigidbody.velocity = velocity;
 
         ////////////////////////////////////////////////////////////////
         // Reset collision variables for next physics simulation step //
@@ -460,13 +338,13 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
 
         //Only erase the ground information AFTER we're sure we're not grounded anymore.
         if (!IsTouchingGround) {
-            groundNormal = Vector3.zero;
-            groundNormalAngle = wallAngle + smallTolerance;
+            GroundNormal = Vector3.zero;
+            GroundNormalAngle = -1;
         }
 
         //Set this variable back to the "erased" position because there might be a new,
         //more level ground normal in the next physics update.
-        newGroundAngle = wallAngle + smallTolerance;
+        newGroundAngle = -1;
 
        //Keep track if we were grounded during the last update
         wasTouchingGround = isTouchingGround;
@@ -474,18 +352,18 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
 
         // Reset the variables for slope, wall, and ceiling.
         ////////////////////////////////////////////////////
-        slopeNormal = Vector3.zero;
-        slopeNormalAngle = wallAngle + smallTolerance;
-        isTouchingSteepSlope = false;
-        isStandingOnSteepSlope = false;
+        SteepSlopeNormal = Vector3.zero;
+        SteepSlopeNormalAngle = -1;
+        IsTouchingSteepSlope = false;
+        IsStandingOnSteepSlope = false;
 
-        wallNormal = Vector3.zero;
-        wallNormalAngle = wallAngle - smallTolerance;
-        isTouchingWall = false;
+        WallNormal = Vector3.zero;
+        WallNormalAngle = -1;
+        IsTouchingWall = false;
 
-        ceilingNormal = Vector3.zero;
-        ceilingNormalAngle = wallAngle - smallTolerance;
-        isTouchingCeiling = false;
+        CeilingNormal = Vector3.zero;
+        CeilingNormalAngle = -1;
+        IsTouchingCeiling = false;
 
         /////////////////////////////////////
         // Start PostFixedUpdate Coroutine //
@@ -529,40 +407,40 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
 
             //Test to see if we're standing on ground.
 
-            if (angle <= (wallAngle - smallTolerance) && angle < newGroundAngle) {
+            if (angle <= (wallAngle - smallTolerance) && (newGroundAngle == -1 || angle < newGroundAngle)) {
                 isTouchingGround = true;
 
                 //Get the flattest ground angle.
-                if (angle < newGroundAngle) {
-                    groundNormal = contact.normal;
-                    groundNormalAngle = angle;
+                if ((newGroundAngle == -1 || angle < newGroundAngle)) {
+                    GroundNormal = contact.normal;
+                    GroundNormalAngle = angle;
                     newGroundAngle = angle;
                 }
 
 
                 //Test to see if we're standing on a steep slope.
                 //Get the flattest steep slope angle
-                if (angle > (steepSlopeAngle + smallTolerance) && angle < slopeNormalAngle) {
-                    slopeNormal = contact.normal;
-                    slopeNormalAngle = angle;
-                    isTouchingSteepSlope = true;
+                if (angle > (steepSlopeAngle + smallTolerance) && (SteepSlopeNormalAngle == -1 || angle < SteepSlopeNormalAngle)) {
+                    SteepSlopeNormal = contact.normal;
+                    SteepSlopeNormalAngle = angle;
+                    IsTouchingSteepSlope = true;
                 }
             }
                 
             //Test to see if we're touching a wall.
             //Get the steepest wall angle
-            if (angle <= (ceilingAngle + smallTolerance) && angle > (wallAngle - smallTolerance) && angle > wallNormalAngle) {
-                wallNormal = contact.normal;
-                wallNormalAngle = angle;
-                isTouchingWall = true;
+            if (angle <= (ceilingAngle + smallTolerance) && angle > (wallAngle - smallTolerance) && (WallNormalAngle == -1 || angle > WallNormalAngle)) {
+                WallNormal = contact.normal;
+                WallNormalAngle = angle;
+                IsTouchingWall = true;
             }
 
             //Test to see if we're touching a ceiling (aka, we're colliding with something that's above us!)
             //Get the largest ceiling angle which is technically the shallowest angle.
-            if (angle > (ceilingAngle + smallTolerance) && angle > ceilingNormalAngle) {
-                ceilingNormal = contact.normal;
-                ceilingNormalAngle = angle;
-                isTouchingCeiling = true;
+            if (angle > (ceilingAngle + smallTolerance) && (CeilingNormalAngle == -1 || angle > CeilingNormalAngle)) {
+                CeilingNormal = contact.normal;
+                CeilingNormalAngle = angle;
+                IsTouchingCeiling = true;
             }
 
         }
@@ -576,8 +454,8 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
 
         //Test to see if we're standing on a steep slope.
         //This triggers logic such as making us slide down said steep slope and possibly animation state machine changes in the future.
-        if (isTouchingSteepSlope && groundNormalAngle == slopeNormalAngle) {
-            isStandingOnSteepSlope = true;
+        if (IsTouchingSteepSlope && GroundNormalAngle == SteepSlopeNormalAngle) {
+            IsStandingOnSteepSlope = true;
         }
 
         //Ground sticky effect
@@ -600,13 +478,13 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
                 tr.position = new Vector3(tr.position.x, Mathf.Min(tr.position.y, hit.point.y + bottomDiff), tr.position.z);
 
                 //If we went over a peak then we want to kill our velocity, otherwise going down really fast should stay the same.
-                rb.velocity = new Vector3(rb.velocity.x, Mathf.Min(0, velocity.y), rb.velocity.z);
+                Rigidbody.velocity = new Vector3(Rigidbody.velocity.x, Mathf.Min(0, velocity.y), Rigidbody.velocity.z);
 
                 //We DID just put ourselves back on the ground.
                 //So update the groundNormal information.
                 isTouchingGround = true;
-                groundNormal = hit.normal;
-                groundNormalAngle = angle;
+                GroundNormal = hit.normal;
+                GroundNormalAngle = angle;
             }
         }
     }
@@ -647,28 +525,29 @@ public class RigidbodyCharacterMotor : DinoCharacterMotor {
     [Header("[DEBUG]")]
     public bool showDebugInfo = false;
     public bool showCollisionInfo = false;
+    
 
     void OnGUI() {
         if (showDebugInfo) {
             GUILayout.BeginVertical("box", GUILayout.MinWidth(275));
             {
-                GUILayout.Label("Rigidbody Velocity: " + rb.velocity.ToString() + " | " + (Mathf.Round(rb.velocity.magnitude * 100) / 100));
-                GUILayout.Label("MPH: " + ((Mathf.Round(rb.velocity.magnitude * 100) / 100) * 2.23694f));
+                GUILayout.Label("Rigidbody Velocity: " + Rigidbody.velocity.ToString() + " | " + (Mathf.Round(Rigidbody.velocity.magnitude * 100) / 100));
+                GUILayout.Label("MPH: " + ((Mathf.Round(Rigidbody.velocity.magnitude * 100) / 100) * 2.23694f));
                 GUILayout.Label("Fixed UPS: " + 1 / Time.fixedDeltaTime);
                 GUILayout.Label("FPS: " + (1 / fps).ToString("F2") + " (" + (1 / Time.deltaTime).ToString("F2") + ")");
                 if (showCollisionInfo) {
-                    GUILayout.Label(" Ground Normal: " + groundNormal.ToString());
-                    GUILayout.Label("         Angle: " + groundNormalAngle);
+                    GUILayout.Label(" Ground Normal: " + GroundNormal.ToString());
+                    GUILayout.Label("         Angle: " + GroundNormalAngle);
                     GUILayout.Label("          Flag: " + isTouchingGround + " was " + wasTouchingGround);
-                    GUILayout.Label("  Slope Normal: " + slopeNormal.ToString());
-                    GUILayout.Label("         Angle: " + slopeNormalAngle);
-                    GUILayout.Label("          Flag: " + isTouchingSteepSlope + " on " + isStandingOnSteepSlope);
-                    GUILayout.Label("   Wall Normal: " + wallNormal.ToString());
-                    GUILayout.Label("         Angle: " + wallNormalAngle);
-                    GUILayout.Label("          Flag: " + isTouchingWall);
-                    GUILayout.Label("Ceiling Normal: " + ceilingNormal.ToString());
-                    GUILayout.Label("         Angle: " + ceilingNormalAngle);
-                    GUILayout.Label("          Flag: " + isTouchingCeiling);
+                    GUILayout.Label("  Slope Normal: " + SteepSlopeNormal.ToString());
+                    GUILayout.Label("         Angle: " + SteepSlopeNormalAngle);
+                    GUILayout.Label("          Flag: " + IsTouchingSteepSlope + " on " + IsStandingOnSteepSlope);
+                    GUILayout.Label("   Wall Normal: " + WallNormal.ToString());
+                    GUILayout.Label("         Angle: " + WallNormalAngle);
+                    GUILayout.Label("          Flag: " + IsTouchingWall);
+                    GUILayout.Label("Ceiling Normal: " + CeilingNormal.ToString());
+                    GUILayout.Label("         Angle: " + CeilingNormalAngle);
+                    GUILayout.Label("          Flag: " + IsTouchingCeiling);
                 }
             }
             GUILayout.EndVertical();

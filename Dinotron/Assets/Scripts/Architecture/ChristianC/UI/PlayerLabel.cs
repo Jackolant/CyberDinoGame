@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class DinoLabel : MonoBehaviour {
+public class PlayerLabel : MonoBehaviour {
 
     public WorldDinoUI worldDinoUI;
     public Image image;

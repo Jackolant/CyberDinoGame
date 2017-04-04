@@ -25,13 +25,13 @@ public class MapManager : MonoBehaviour {
 	void OnEnable () {
         instance = this;
         InputManager.AddButtonDelegate("Cancel", Restart);
-        DinoCharacter.DinoDeath += OnDinoDeath;
+        GameCharacter.CharacterDeath += OnDinoDeath;
 	}
 
     void OnDisable() {
         instance = null;
         InputManager.RemoveButtonDelegate("Cancel", Restart);
-        DinoCharacter.DinoDeath -= OnDinoDeath;
+        GameCharacter.CharacterDeath -= OnDinoDeath;
     }
 
     void Restart(ButtonState button) {
@@ -84,12 +84,12 @@ public class MapManager : MonoBehaviour {
         // Create the player's dino
         GameObject dinoObject = (GameObject)Instantiate(PlayerManager.PlayerDinos[playerNumber - 1], spawnPosition, spawnRotation, playerGroupTransform);
         Transform dinoTransform = dinoObject.transform;
-        DinoCharacter dinoCharacter = dinoObject.GetComponent<DinoCharacter>();
+        GameCharacter dinoCharacter = dinoObject.GetComponent<GameCharacter>();
 
         // Create the player's camera
         GameObject cameraObject = (GameObject)Instantiate(playerCameraPrefab, spawnPosition, spawnRotation, playerGroupTransform);
         Camera playerCamera = cameraObject.GetComponent<Camera>();
-        PlayerDinoCamera dinoCamera = cameraObject.GetComponent<PlayerDinoCamera>();
+        PlayerOrbitCamera dinoCamera = cameraObject.GetComponent<PlayerOrbitCamera>();
 
         // Create the player's HUD UI
         GameObject hudUIObject = (GameObject)Instantiate(dinoHUDUIPrefab, playerGroupTransform);
@@ -121,7 +121,7 @@ public class MapManager : MonoBehaviour {
         }
 
         // UI Script
-        dinoUI.dino = dinoCharacter;
+        dinoUI.gameCharacter = dinoCharacter;
         dinoUI.playerCamera = playerCamera;
         dinoUI.playerNumber = playerNumber;
 
@@ -161,7 +161,7 @@ public class MapManager : MonoBehaviour {
         WorldDinoUI worldDinoUI = worldUIObject.GetComponent<WorldDinoUI>();
 
         // Configure world UI object
-        worldDinoUI.dino = data.dinoCharacter;
+        worldDinoUI.gameCharacter = data.dinoCharacter;
         worldDinoUI.playerCamera = viewerdata.playerCamera;
         worldDinoUI.playerNumber = viewerdata.playerNumber;
         worldDinoUI.dinoPlayerNumber = data.playerNumber;
@@ -173,7 +173,7 @@ public class MapManager : MonoBehaviour {
         data.AddWorldUIData(worldUIObject, worldDinoUI);
     }
 
-    private void OnDinoDeath(DinoCharacter dino) {
+    private void OnDinoDeath(GameCharacter dino) {
         PlayerControl playerControl = dino.GetComponent<PlayerControl>();
         if (playerControl != null) {
             alivePlayers--;

@@ -2,9 +2,9 @@
 using System;
 using System.Collections;
 
-public class DinoCharacter : MonoBehaviour {
+public class GameCharacter : MonoBehaviour {
 
-    public RigidbodyCharacterMotor motor;
+    public CharacterMotor motor;
 
     //Inputs
     [HideInInspector]
@@ -27,6 +27,7 @@ public class DinoCharacter : MonoBehaviour {
     public float speed;
     public float sprintSpeed;
     public float sprintHeatCostPerSecond;
+    public float jumpHeight;
 
     [SerializeField]
     private float currentHealth;
@@ -94,16 +95,19 @@ public class DinoCharacter : MonoBehaviour {
         get { return overheated; }
     }
 
-    public PrototypeWeapon weapon;
+    public CharacterGun gun;
+    public Weapon weapon;
 
     public Action<float> HealthChangePercentage;
     public Action<float, float> HealthChange;
     public Action Death;
-    public static Action<DinoCharacter> DinoDeath;
+    public static Action<GameCharacter> CharacterDeath;
 
     public Action<float> HeatChangePercentage;
     public Action<float, float> HeatChange;
     public Action<bool> Overheat;
+
+    public Action<Weapon> WeaponFired;
 
     private void UpdateHealthChange() {
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
@@ -117,8 +121,8 @@ public class DinoCharacter : MonoBehaviour {
         }
 
         if (currentHealth == 0 && Death != null) {
-            if (DinoDeath != null) {
-                DinoDeath(this);
+            if (CharacterDeath != null) {
+                CharacterDeath(this);
             }
             Death();
         }
@@ -160,31 +164,47 @@ public class DinoCharacter : MonoBehaviour {
     }
 
     // Character physics!
-    void FixedUpdate() {
-
-        //Move the character!
-        motor.Move(Time.fixedDeltaTime);
-
-        //Add sprinting heat cost
-        if (IsSprinting) {
-            CurrentHeat += sprintHeatCostPerSecond * Time.fixedDeltaTime;
+    protected virtual void FixedUpdate() {
+        if (motor != null) {
+            UpdateMovement(Time.fixedDeltaTime);
         }
     }
 
-	// Update is called once per frame
-	void Update () {
-        // Fire the weapon!
-        if (fireInput && !overheated && weapon != null) {
-            if (weapon.Fire()) {
-                CurrentHeat += weapon.heat;
+    protected virtual void UpdateMovement(float fixedDeltaTime) {
+        motor.Move(fixedDeltaTime);
+
+        //Add sprinting heat cost
+        if (IsSprinting) {
+            CurrentHeat += sprintHeatCostPerSecond * fixedDeltaTime;
+        }
+    }
+
+    // Update is called once per frame
+    protected virtual void Update () {
+        UpdateWeapon();
+        UpdateHeat();
+    }
+
+    protected virtual void UpdateWeapon() {
+        if (gun != null && weapon != null && weapon.isActiveAndEnabled) {
+            float heatChange;
+            bool weaponFired;
+            bool firing = (Overheated) ? false : fireInput;
+            weapon.UpdateState(firing, gun.bulletSpawnPoints, out heatChange, out weaponFired);
+            CurrentHeat += heatChange;
+
+            if (weaponFired && WeaponFired != null) {
+                WeaponFired(weapon);
             }
         }
+    }
 
+    protected virtual void UpdateHeat() {
         // Update heat cooling
         if (!overheated || (overheated && (Time.time >= overheatedAtTime + overheatWaitPeriod))) {
             CurrentHeat -= heatCooldownPerSecond * Time.deltaTime;
         }
-	}
+    }
 
     void OnValidate() {
 

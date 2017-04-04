@@ -4,7 +4,7 @@ using System.Collections;
 
 public class WorldDinoUI : DinoUI {
 
-    public int dinoPlayerNumber;
+    public int dinoPlayerNumber = 1;
     private Transform cameraTransform;
     private Transform tr;
 

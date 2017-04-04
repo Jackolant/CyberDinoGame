@@ -6,7 +6,7 @@ using System.Collections;
 public class Bullet : MonoBehaviour {
 
     private DamageDealer damageDealer;
-    public float speed = 50f;
+    public float speed = 100f;
 
     private Transform tr;
     private Vector3 startPosition;

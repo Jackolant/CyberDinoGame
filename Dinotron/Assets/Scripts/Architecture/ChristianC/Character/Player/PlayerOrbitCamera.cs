@@ -2,7 +2,7 @@
 using System.Collections;
 
 [RequireComponent(typeof(Camera))]
-public class PlayerDinoCamera : MonoBehaviour {
+public class PlayerOrbitCamera : MonoBehaviour {
 
     public PlayerControl playerControl;
     public Transform target;

@@ -8,11 +8,11 @@ public class HealthBar : MonoBehaviour {
     public Image healthBar;
 
     void OnEnable() {
-        dinoUI.dino.HealthChangePercentage += UpdateHealthBar;
+        dinoUI.gameCharacter.HealthChangePercentage += UpdateHealthBar;
     }
 
     void OnDisable() {
-        dinoUI.dino.HealthChangePercentage -= UpdateHealthBar;
+        dinoUI.gameCharacter.HealthChangePercentage -= UpdateHealthBar;
     }
 
     void UpdateHealthBar(float percentage) {

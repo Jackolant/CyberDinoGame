@@ -4,7 +4,7 @@ using System;
 
 public class HitboxDinoBody : MonoBehaviour, IHitbox {
 
-    public DinoCharacter dino;
+    public GameCharacter dino;
     public bool weakPoint;
 
     public event Action<float> DamageTaken;

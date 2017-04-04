@@ -10,7 +10,7 @@ public class HealthBar_Cody : MonoBehaviour
 	public Image fillImage;
 
 	[Header("Drag Dino's Damageable script here")]
-	public PrototypeDamageable damageableScript;
+	//public PrototypeDamageable damageableScript;
 	[Tooltip("Does this health bar go over an enemy?")]
 	public bool isEnemy;
 
@@ -23,7 +23,7 @@ public class HealthBar_Cody : MonoBehaviour
 		fillImage.fillAmount = 1;
 		fillColor = fillImage.color;
 
-		damageableScript.onHealthChange += RemoveHealth;
+		//damageableScript.onHealthChange += RemoveHealth;
 
 		//Add couroutine for healthpickup here
 //		HealthPickUp.passHealth += AddHealth;

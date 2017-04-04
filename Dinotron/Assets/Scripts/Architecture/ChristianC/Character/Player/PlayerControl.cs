@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(RigidbodyCharacterMotor))]
+[RequireComponent(typeof(RigidbodyMotor))]
 public class PlayerControl : MonoBehaviour {
 
     public int playerNumber = 1;
     private Transform tr;
 
     [Tooltip("The camera that the player is using. This script bases input on the rotation and position of this camera.")]
-    public PlayerDinoCamera playerCamera;
+    public PlayerOrbitCamera playerCamera;
     private Transform cameraTransform;
 
-    public DinoCharacter dino;
+    public GameCharacter dino;
     public float maxAimRaycastDistance = 1000f;
 
     public PlayerInputConfig inputConfig;

@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(Canvas))]
 public class DinoUI : MonoBehaviour {
 
-    public DinoCharacter dino;
+    public GameCharacter gameCharacter;
     public Camera playerCamera;
     public int playerNumber;
     protected Canvas canvas;
