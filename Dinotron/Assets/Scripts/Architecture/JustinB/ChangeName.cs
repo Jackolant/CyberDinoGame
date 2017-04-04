@@ -3,19 +3,17 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class ChangeName : MonoBehaviour {
+	public Text dinoName; //creates a text object that allows attaching of a text object to this script
+	public GameObject signalSource; 
+	private GetDinoInfo delegateSource; //attaches to an instance of the GetDinoInfo script
 
-	public Text dinoName; //creates a text object that allows attacking of a text object in the scene
-	[SerializeField]
-	private DinoManager.playerNumber playerCode; //listens for a certain players event call.
 	void Start () {
-		dinoName.text = "Stegosaurus"; //sets the name to the first dinosaur in the list
-		DinoManager.sendName += nameChange; //when the player switches dinosaurs, this delegate subscription recieves the name of the new dionsaur
+		delegateSource = signalSource.GetComponent<GetDinoInfo> (); //sets delegate source to the GetDinoInfo Script of the attached object
+		delegateSource.sendName += NameChange; //when the player switches dinosaurs, this delegate subscription recieves the name of the new dionsaur
 	}
-	public void nameChange(string name,DinoManager.playerNumber player) //changes the name of the dinosaur that is being displayed on the screen
+	public void NameChange(string name) //changes the name of the dinosaur that is being displayed on the screen
 	{
-		if (player == playerCode)
-		{
 		dinoName.text = name; //changes the onscreen text of the dinosaur's name to the one recieved by the delegate call "sendName" from the DinoManager script.
-		}
-		}
+
+	}
 }
