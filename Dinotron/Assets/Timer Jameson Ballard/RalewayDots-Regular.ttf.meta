@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 5bb895c99e58c0b45862c6cfb2afc2c4
+timeCreated: 1490153241
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: 'Raleway Dots '
+  fontNames:
+  - 'Raleway Dots '
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
