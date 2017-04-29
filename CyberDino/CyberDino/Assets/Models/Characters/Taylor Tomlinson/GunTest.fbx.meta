@@ -1,0 +1,178 @@
+fileFormatVersion: 2
+guid: 15583d67fae814b2cb758ec3adfe8aac
+timeCreated: 1492228871
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: BallJoint
+    100002: Gun
+    100004: Gun1
+    100006: Gun2
+    100008: Gun3
+    100010: Gun4
+    100012: //RootNode
+    100014: Housing
+    100016: pCube1
+    100018: pCube2
+    100020: pCube3
+    100022: pCube4
+    100024: pCylinder1
+    100026: pCylinder2
+    100028: pPipe1
+    100030: pPipe10
+    100032: pPipe11
+    100034: pPipe2
+    100036: pPipe3
+    100038: pPipe4
+    100040: pPipe5
+    100042: pPipe6
+    100044: pPipe7
+    100046: pPipe8
+    100048: pPipe9
+    100050: pSphere1
+    100052: recoil_arm
+    100054: RecoilArm
+    100056: transform1
+    100058: transform2
+    100060: transform3
+    400000: BallJoint
+    400002: Gun
+    400004: Gun1
+    400006: Gun2
+    400008: Gun3
+    400010: Gun4
+    400012: //RootNode
+    400014: Housing
+    400016: pCube1
+    400018: pCube2
+    400020: pCube3
+    400022: pCube4
+    400024: pCylinder1
+    400026: pCylinder2
+    400028: pPipe1
+    400030: pPipe10
+    400032: pPipe11
+    400034: pPipe2
+    400036: pPipe3
+    400038: pPipe4
+    400040: pPipe5
+    400042: pPipe6
+    400044: pPipe7
+    400046: pPipe8
+    400048: pPipe9
+    400050: pSphere1
+    400052: recoil_arm
+    400054: RecoilArm
+    400056: transform1
+    400058: transform2
+    400060: transform3
+    2300000: BallJoint
+    2300002: //RootNode
+    2300004: Housing
+    2300006: RecoilArm
+    3300000: BallJoint
+    3300002: //RootNode
+    3300004: Housing
+    3300006: RecoilArm
+    4300000: Arm
+    4300002: Housing
+    4300004: RecoilArm
+    4300006: BallJoint
+    4300008: pPipe1
+    4300010: pPipe2
+    4300012: pPipe3
+    4300014: pPipe4
+    4300016: pCylinder1
+    4300018: pPipe5
+    4300020: pPipe6
+    4300022: pPipe7
+    4300024: pPipe8
+    4300026: pPipe9
+    4300028: pPipe10
+    4300030: pPipe11
+    4300032: pCube1
+    4300034: pCube2
+    4300036: pCube3
+    4300038: pCube4
+    9500000: //RootNode
+    13700000: pCube1
+    13700002: pCube2
+    13700004: pCube3
+    13700006: pCube4
+    13700008: pCylinder1
+    13700010: pPipe1
+    13700012: pPipe10
+    13700014: pPipe11
+    13700016: pPipe2
+    13700018: pPipe3
+    13700020: pPipe4
+    13700022: pPipe5
+    13700024: pPipe6
+    13700026: pPipe7
+    13700028: pPipe8
+    13700030: pPipe9
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

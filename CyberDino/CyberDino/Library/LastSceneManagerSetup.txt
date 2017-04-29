@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/Scenes/VFXPractice_JF.unity
+  isLoaded: 1
+  isActive: 1

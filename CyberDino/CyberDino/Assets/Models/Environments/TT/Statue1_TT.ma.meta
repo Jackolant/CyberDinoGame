@@ -1,0 +1,310 @@
+fileFormatVersion: 2
+<<<<<<< HEAD
+<<<<<<< HEAD
+guid: 4f080c0879977b84eb68061da7b7b02e
+timeCreated: 1493146189
+licenseType: Free
+=======
+guid: 07b5387435a5508418f623fa37103514
+timeCreated: 1493147614
+licenseType: Pro
+>>>>>>> 042a072da0dd261853f4683716979f2c98bc50fa
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Belt
+    100002: Chest
+    100004: Chest 1
+    100006: ChestArmor
+    100008: CrystalGroup1
+    100010: CrystalGroup2
+    100012: Head
+    100014: L_Arm
+    100016: pCube10
+    100018: pCube10 1
+    100020: pCube13
+    100022: pCube14
+    100024: pCube15
+    100026: pCube16
+    100028: pCube17
+    100030: pCube18
+    100032: pCube20
+    100034: pCube20 1
+    100036: pCube21
+    100038: pCube21 1
+    100040: pCube22
+    100042: pCube23
+    100044: pCube24
+    100046: pCube25
+    100048: pCube26
+    100050: pCube27
+    100052: pCube28
+    100054: pCube29
+    100056: pCube5
+    100058: pCube5 1
+    100060: pCube6
+    100062: pCube6 1
+    100064: pCube7
+    100066: pCube7 1
+    100068: pCube8
+    100070: pCube8 1
+    100072: pCube9
+    100074: pCube9 1
+    100076: pCylinder1
+    100078: pCylinder2
+    100080: pCylinder3
+    100082: pCylinder3 1
+    100084: pCylinder4
+    100086: pSphere1
+    100088: pTorus1
+    100090: R_Arm
+    100092: Skull
+    100094: //RootNode
+    400000: Belt
+    400002: Chest
+    400004: Chest 1
+    400006: ChestArmor
+    400008: CrystalGroup1
+    400010: CrystalGroup2
+    400012: Head
+    400014: L_Arm
+    400016: pCube10
+    400018: pCube10 1
+    400020: pCube13
+    400022: pCube14
+    400024: pCube15
+    400026: pCube16
+    400028: pCube17
+    400030: pCube18
+    400032: pCube20
+    400034: pCube20 1
+    400036: pCube21
+    400038: pCube21 1
+    400040: pCube22
+    400042: pCube23
+    400044: pCube24
+    400046: pCube25
+    400048: pCube26
+    400050: pCube27
+    400052: pCube28
+    400054: pCube29
+    400056: pCube5
+    400058: pCube5 1
+    400060: pCube6
+    400062: pCube6 1
+    400064: pCube7
+    400066: pCube7 1
+    400068: pCube8
+    400070: pCube8 1
+    400072: pCube9
+    400074: pCube9 1
+    400076: pCylinder1
+    400078: pCylinder2
+    400080: pCylinder3
+    400082: pCylinder3 1
+    400084: pCylinder4
+    400086: pSphere1
+    400088: pTorus1
+    400090: R_Arm
+    400092: Skull
+    400094: //RootNode
+    2300000: Belt
+    2300002: Chest 1
+    2300004: ChestArmor
+    2300006: pCube10
+    2300008: pCube10 1
+    2300010: pCube13
+    2300012: pCube14
+    2300014: pCube15
+    2300016: pCube16
+    2300018: pCube17
+    2300020: pCube18
+    2300022: pCube20
+    2300024: pCube20 1
+    2300026: pCube21
+    2300028: pCube21 1
+    2300030: pCube22
+    2300032: pCube23
+    2300034: pCube24
+    2300036: pCube25
+    2300038: pCube26
+    2300040: pCube27
+    2300042: pCube28
+    2300044: pCube29
+    2300046: pCube5
+    2300048: pCube5 1
+    2300050: pCube6
+    2300052: pCube6 1
+    2300054: pCube7
+    2300056: pCube7 1
+    2300058: pCube8
+    2300060: pCube8 1
+    2300062: pCube9
+    2300064: pCube9 1
+    2300066: pCylinder1
+    2300068: pCylinder2
+    2300070: pCylinder3
+    2300072: pCylinder3 1
+    2300074: pCylinder4
+    2300076: pSphere1
+    2300078: pTorus1
+    2300080: Skull
+    3300000: Belt
+    3300002: Chest 1
+    3300004: ChestArmor
+    3300006: pCube10
+    3300008: pCube10 1
+    3300010: pCube13
+    3300012: pCube14
+    3300014: pCube15
+    3300016: pCube16
+    3300018: pCube17
+    3300020: pCube18
+    3300022: pCube20
+    3300024: pCube20 1
+    3300026: pCube21
+    3300028: pCube21 1
+    3300030: pCube22
+    3300032: pCube23
+    3300034: pCube24
+    3300036: pCube25
+    3300038: pCube26
+    3300040: pCube27
+    3300042: pCube28
+    3300044: pCube29
+    3300046: pCube5
+    3300048: pCube5 1
+    3300050: pCube6
+    3300052: pCube6 1
+    3300054: pCube7
+    3300056: pCube7 1
+    3300058: pCube8
+    3300060: pCube8 1
+    3300062: pCube9
+    3300064: pCube9 1
+    3300066: pCylinder1
+    3300068: pCylinder2
+    3300070: pCylinder3
+    3300072: pCylinder3 1
+    3300074: pCylinder4
+    3300076: pSphere1
+    3300078: pTorus1
+    3300080: Skull
+    4300000: pCube5
+    4300002: pCube6
+    4300004: pCube7
+    4300006: pCube8
+    4300008: pCube9
+    4300010: pCube10
+    4300012: pCube5
+    4300014: pCube6
+    4300016: pCube7
+    4300018: pCube8
+    4300020: pCube9
+    4300022: pCube10
+    4300024: pSphere1
+    4300026: ChestArmor
+    4300028: pCube26
+    4300030: pCube27
+    4300032: pCube28
+    4300034: pCube29
+    4300036: pCube22
+    4300038: pCube23
+    4300040: pCube24
+    4300042: pCube25
+    4300044: pTorus1
+    4300046: Chest
+    4300048: Belt
+    4300050: pCube18
+    4300052: pCube17
+    4300054: Skull
+    4300056: pCube13
+    4300058: pCube14
+    4300060: pCylinder1
+    4300062: pCube15
+    4300064: pCube16
+    4300066: pCylinder2
+    4300068: pCylinder3
+    4300070: pCube21
+    4300072: pCube20
+    4300074: pCylinder4
+    4300076: pCylinder3
+    4300078: pCube21
+    4300080: pCube20
+    7400000: Take 001
+    9500000: //RootNode
+<<<<<<< HEAD
+=======
+guid: 98b6986e8d6a7d84aa204ad76d069012
+timeCreated: 1493149866
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName: {}
+>>>>>>> 54a882fa7339fa8569396d6ee80ff1600e433941
+=======
+>>>>>>> 042a072da0dd261853f4683716979f2c98bc50fa
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
